@@ -1,0 +1,265 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace pruebadelsaber
+{
+    internal class Program
+    {
+        
+        struct Piloto
+        {
+            public string Nombre;
+            public int Carrera1;
+            public int Carrera2;
+            public int Carrera3;
+            public int Carrera4;
+        }
+        static void Main(string[] args)
+        {
+            bool DatosPilotos = false;
+            string[] carreras = { "Monaco", "Silverstone", "Monza", "Sukuza" };
+            string[] pilotos = new string[6];
+            int[,] puntosCarreras = new int[4, 6];
+            List<Piloto> listaPilotos = new List<Piloto>();
+            
+
+            while (true)
+            {
+                Console.WriteLine("Menu:");
+                Console.WriteLine("1_Cargar nombres de pilotos");
+                Console.WriteLine("2_Mostrar nombres ordenados");
+                Console.WriteLine("3_Ingresas los puntops por carrera");
+                Console.WriteLine("4_Mostrar datos de los pilotos");
+                Console.WriteLine("5_Convertir datos a lista dinamica");
+                Console.WriteLine("6_Calcular y mostrar total de puntos por piloto");
+                Console.WriteLine("7. Salir\n ");
+                Console.Write("Seleccione una opcion:");
+
+
+                if (!int.TryParse(Console.ReadLine(), out int opcion) || opcion < 1 || opcion > 7)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Opcion invalida. Intente nuevamente");
+
+                }
+
+                switch (opcion)
+                {
+                    case 1:
+                        CargarNombrePilotos(pilotos);
+                        DatosPilotos = true;
+                        break;
+                    case 2:
+                        if (DatosPilotos == false)
+                        {
+                            Console.WriteLine("No hay datos cargados de pilotos, ingrese a la opcion 1");
+                            Console.ReadLine();
+                            Console.Clear();
+                            
+                        }
+                        else
+                        {
+                            MostrarNombresOrdenados(pilotos);
+                        }
+                        break;
+                    case 3:
+                        if (DatosPilotos == false)
+                        {
+                            Console.WriteLine("No hay datos cargados de pilotos, ingrese a la opcion 1");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            IngresarPuntosPorCarrera(puntosCarreras, carreras, pilotos);
+                        }
+                        break;
+                    case 4:
+                        if (DatosPilotos == false)
+                        {
+                            Console.WriteLine("No hay datos cargados de pilotos, ingrese a la opcion 1");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            MostrarDatosPilotos(pilotos, puntosCarreras, carreras);
+                        }
+                            break;
+                        
+                    case 5:
+                        if (DatosPilotos == false)
+                        {
+                            Console.WriteLine("No hay datos cargados de pilotos, ingrese a la opcion 1");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            ConvertirDatosAListaDinamica(pilotos, puntosCarreras, listaPilotos);
+                        }
+                            break;
+                    case 6:
+                        if (DatosPilotos == false)
+                        {
+                            Console.WriteLine("No hay datos cargados de pilotos, ingrese a la opcion 1");
+                            Console.ReadKey();
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            CalcularTotalPuntos(listaPilotos);
+
+                        }
+                        break;
+                    case 7:
+                        return;
+                }
+            }
+        }
+
+        static void CargarNombrePilotos(string[] pilotos)
+        {
+            for (int i = 0; i < pilotos.Length; i++)
+            {
+                Console.WriteLine($"Ingrese el nombre del piloto n°{i + 1}: ");
+                string nombre = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(nombre))
+                {
+                    Console.WriteLine("El nombre esta vacio. Intente nuevamente");
+                    i--;
+                }
+                else
+                {
+                    pilotos[i] = nombre;
+                   
+                }
+                
+            }
+            Console.Clear();
+            Console.WriteLine("Datos cargados correctamente, precione Enter para continuar");
+            Console.ReadKey();
+            
+        }
+        
+        static void MostrarNombresOrdenados(string[] pilotos)
+        {
+            Console.Clear();
+            string[] copiaPilotos = (string[])pilotos.Clone();
+            Burbujeo(copiaPilotos);
+            Console.WriteLine("Nombre Pilotos Ordenados:");
+            foreach(string nombre in copiaPilotos)
+            {
+                Console.WriteLine(nombre);
+            }
+            
+            Console.WriteLine("Nombres ordenados correctamente, precione Enter para continuar");
+            Console.ReadLine();
+            Console.Clear ();
+        }
+
+        static void Burbujeo(string[] arr)
+        {
+            int n = arr.Length;
+            for(int i = 0; i < n - 1; i++)
+            {
+                for (int j = 0; j < n - i - 1; j++)
+
+                {
+                    if (string.Compare(arr[j], arr[j + 1]) > 0)
+                    {
+                        string temp = arr[j];
+                        arr[j] = arr[j + 1];
+                        arr[j + 1] = temp;
+                    }
+                }
+            }
+        }
+
+        static void IngresarPuntosPorCarrera(int[,] puntosCarreras, string[]carreras, string[] pilotos)
+        {
+            Console.Clear();
+            Console.WriteLine("Ingreso de puntos por Carrera");
+            
+            for (int i = 0; i < carreras.Length; i++)
+            {
+                for (int j = 0; j < pilotos.Length; j++)
+                {
+                    while (true)
+                    {
+                        Console.WriteLine($"Ingrese los puntos para {pilotos[j]} en {carreras[i]}: ");
+                        if (int.TryParse(Console.ReadLine(),out int puntos) && puntos >= 0 && puntos <= 25)
+                        {
+                            puntosCarreras[i, j] = puntos;
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Puntos invalidos. Debe ser un numero entre 0 y 25");
+                        }
+                    }
+                }
+                
+            }
+            Console.WriteLine("Puntos por carrera cargados, precione Enter para continuar");
+            Console.ReadLine();
+            Console.Clear();
+        }
+
+        static void MostrarDatosPilotos(string[] pilotos, int[,] puntosCarreras, string[] carreras)
+        {
+            for (int j = 0; j < pilotos.Length; j++)
+            {
+                Console.WriteLine($"Piloto: {pilotos[j]}");
+                for (int i = 0;i < carreras.Length; i++)
+                {
+                    Console.WriteLine($"{carreras[i]}: {puntosCarreras[i,j]} puntos");
+                }
+                Console.WriteLine();
+                
+            }
+
+            Console.WriteLine("Oprime ENTER para continuar");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void ConvertirDatosAListaDinamica(string[] pilotos, int[,] puntosCarreras, List<Piloto> listaPilotos)
+        {
+            listaPilotos.Clear();
+            for (int j = 0;j < pilotos.Length; j++)
+            {
+                Piloto piloto = new Piloto()
+                {
+                    Nombre = pilotos[j],
+                    Carrera1 = puntosCarreras[0, j],
+                    Carrera2 = puntosCarreras[1, j],
+                    Carrera3 = puntosCarreras[2, j],
+                    Carrera4 = puntosCarreras[3, j]
+                };
+                listaPilotos.Add(piloto);
+            }
+            Console.WriteLine("Datos transferidos a la lista denamica Exitosamente.");
+            Console.ReadKey();
+            Console.Clear();
+
+        }
+        static void CalcularTotalPuntos(List<Piloto> listaPilotos)
+        {
+            foreach(var piloto in listaPilotos)
+            {
+                int total = piloto.Carrera1 + piloto.Carrera2 + piloto.Carrera3 + piloto .Carrera4;
+                Console.WriteLine($"Piloto: {piloto.Nombre}, Total de puntos: {total}");
+            }
+            Console.WriteLine("Oprima ENTER para continuar");
+            Console.ReadKey ();
+            Console.Clear();
+            
+        }
+    }
+}
